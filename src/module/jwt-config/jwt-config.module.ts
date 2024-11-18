@@ -1,12 +1,12 @@
-// src/module/jwt-config/jwt-config.module.ts
 import { Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
+import { EnvironmentVariables } from "../../common/constant/env.constant";
 
 @Module({
   imports: [
     JwtModule.register({
-      secret: "your_jwt_secret",
-      signOptions: { expiresIn: "60m" },
+      secret: EnvironmentVariables.AUTH_SECRET,
+      signOptions: { expiresIn: EnvironmentVariables.AUTH_EXPIRED_PERIOD },
     }),
   ],
   exports: [JwtModule],
