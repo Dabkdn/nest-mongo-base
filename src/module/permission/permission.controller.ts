@@ -5,12 +5,16 @@ import { ChangeRolePermissionDto } from "./dto/change-role-permission.dto";
 import { ApiBearerAuth } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../../core/guard/auth.guard";
 import { PermissionGuard } from "../../core/guard/permission.guard";
+import { RoleService } from "../role/role.service";
 
 @Controller("permissions")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 export class PermissionController {
-  constructor(private readonly permissionService: PermissionService) {}
+  constructor(
+    private readonly permissionService: PermissionService,
+    private readonly roleService: RoleService
+  ) {}
 
   @Get()
   async getAll(): Promise<Permission[]> {
@@ -21,12 +25,15 @@ export class PermissionController {
   async getRolePermissions(
     @Param("roleId") roleId: string
   ): Promise<Permission[]> {
-    return this.permissionService.getRolePermissions(roleId);
+    return this.permissionService.getRolePermissions(roleId, this.roleService);
   }
 
   @UseGuards(PermissionGuard)
   @Post("/change-role-permissions")
   async changeRolePermisson(@Body() payload: ChangeRolePermissionDto) {
-    return this.permissionService.changeRolePermisson(payload);
+    return this.permissionService.changeRolePermisson(
+      payload,
+      this.roleService
+    );
   }
 }

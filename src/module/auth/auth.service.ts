@@ -6,13 +6,14 @@ import { LoginDto } from "./dto/login.dto";
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private readonly userService: UserService,
-    private readonly jwtService: JwtService
-  ) {}
+  constructor() {}
 
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.userService.findByEmail(email);
+  async validateUser(
+    email: string,
+    password: string,
+    userService: UserService
+  ): Promise<any> {
+    const user = await userService.findByEmail(email);
     if (user && (await bcrypt.compare(password, user.password))) {
       const { password, ...result } = user;
       return result;
@@ -20,16 +21,21 @@ export class AuthService {
     return null;
   }
 
-  async login(payload: LoginDto) {
-    const isValidUser = await this.validateUser(payload.email, payload.password)
-    console.log(isValidUser)
-    if(!isValidUser) {
-        throw new Error('Incorrect credentials, please check them again.')
+  async login(
+    payload: LoginDto,
+    services: { userService: UserService; jwtService: JwtService }
+  ) {
+    const isValidUser = await this.validateUser(
+      payload.email,
+      payload.password,
+      services.userService
+    );
+    if (!isValidUser) {
+      throw new Error("Incorrect credentials, please check them again.");
     }
     const data: any = { email: isValidUser.email, sub: isValidUser.id };
-    console.log(data)
     return {
-      access_token: this.jwtService.sign(data),
+      access_token: services.jwtService.sign(data),
     };
   }
 }

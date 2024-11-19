@@ -13,19 +13,4 @@ export class ActivityLogService {
   async getAll(): Promise<ActivityLog[]> {
     return this.activityLogRepository.findAll();
   }
-
-  async get(id: string): Promise<ActivityLog | any> {
-    return this.activityLogRepository.findOne(id);
-  }
-
-  async update(
-    id: string,
-    updateActivityLogDto: any
-  ): Promise<ActivityLog | any> {
-    return this.activityLogRepository.update(id, updateActivityLogDto);
-  }
-
-  async delete(id: string): Promise<void> {
-    return this.activityLogRepository.remove(id);
-  }
 }

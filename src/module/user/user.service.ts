@@ -2,22 +2,24 @@ import { Injectable } from "@nestjs/common";
 import { UserRepository } from "../../repository/user.repository";
 import { User } from "../../entity/user.entity";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { RoleRepository } from "../../repository/role.repository";
 import { passwordUtil } from "../../common/util/password.util";
+import { RoleService } from "../role/role.service";
 
 @Injectable()
 export class UserService {
-  constructor(
-    private readonly userRepository: UserRepository,
-    private readonly roleRepository: RoleRepository
-  ) {}
+  constructor(private readonly userRepository: UserRepository) {}
 
-  async create(payload: CreateUserDto): Promise<User> {
-    const userRole = await this.roleRepository.findOne({ name: "User" });
+  async create(
+    payload: CreateUserDto,
+    roleService: RoleService
+  ): Promise<User> {
+    const userRole = await (
+      await roleService.getRepository()
+    ).findOne({ name: "User" });
     if (!userRole) {
       throw new Error("Not found user role.");
     }
-    const hashedPassword = await passwordUtil.hashPassword(payload.password)
+    const hashedPassword = await passwordUtil.hashPassword(payload.password);
     return this.userRepository.create({
       ...payload,
       password: hashedPassword,

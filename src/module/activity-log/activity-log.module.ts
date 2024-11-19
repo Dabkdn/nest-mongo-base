@@ -6,7 +6,6 @@ import {
   ActivityLogSchema,
 } from "../../entity/activity-log.entity";
 import { ActivityLogRepository } from "../../repository/activity-log.repository";
-import { ActivityLogController } from "./activity-log.controller";
 
 @Module({
   imports: [
@@ -16,6 +15,5 @@ import { ActivityLogController } from "./activity-log.controller";
   ],
   providers: [ActivityLogService, ActivityLogRepository],
   exports: [ActivityLogService],
-  controllers: [ActivityLogController],
 })
 export class ActivityLogModule {}
