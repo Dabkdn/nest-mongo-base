@@ -16,4 +16,8 @@ export class RoleService {
   async update(id: any, params: any) {
     return this.roleRepository.update(id, params);
   }
+
+  async getOneRoleWithPermissions(id: string) {
+    return this.roleRepository.getOneRoleWithPermissions(id);
+  }
 }

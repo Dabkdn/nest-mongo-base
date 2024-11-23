@@ -52,7 +52,8 @@ export class PermissionService {
     roleId: string,
     roleService: RoleService
   ): Promise<any> {
-    const role = await roleService.findOne({ id: roleId });
+    const role = await roleService.getOneRoleWithPermissions(roleId);
+    console.log(role);
     if (!role) {
       throw new Error("Not found role");
     }
